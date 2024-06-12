@@ -52,7 +52,7 @@ const QRCodeGenerator: React.FC = () => {
                 }}
             >
                 {inputValue && <QRCode value={inputValue} size={224} renderAs="svg" />}
-            </Box>
+            </Box> <br />
             {inputValue && (
                 <Button
                     variant="contained"
