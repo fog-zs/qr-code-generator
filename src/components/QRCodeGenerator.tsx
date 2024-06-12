@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import QRCode from 'qrcode.react';
 import { Container, TextField, Box, Typography, Button } from '@mui/material';
-import { toPng } from 'html-to-image';
+import html2canvas from 'html2canvas';
 
 const QRCodeGenerator: React.FC = () => {
     const [inputValue, setInputValue] = useState<string>('');
@@ -16,7 +16,14 @@ const QRCodeGenerator: React.FC = () => {
             return;
         }
 
-        const dataUrl = await toPng(qrCodeRef.current);
+        const canvas = await html2canvas(qrCodeRef.current, {
+            scale: 2, 
+            useCORS: true,
+            width: 256,
+            height: 256
+        });
+
+        const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = 'qr-code.png';
@@ -34,8 +41,17 @@ const QRCodeGenerator: React.FC = () => {
                 onChange={handleInputChange}
                 style={{ marginBottom: '20px' }}
             />
-            <Box ref={qrCodeRef}>
-                {inputValue && <QRCode value={inputValue} size={256} />}
+            <Box
+                ref={qrCodeRef}
+                style={{
+                    display: 'inline-block',
+                    padding: '16px',
+                    backgroundColor: 'white',
+                    width: 'auto',
+                    height: 'auto'
+                }}
+            >
+                {inputValue && <QRCode value={inputValue} size={224} renderAs="svg" />}
             </Box>
             {inputValue && (
                 <Button
